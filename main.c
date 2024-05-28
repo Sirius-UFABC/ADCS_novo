@@ -5,7 +5,7 @@
 #include "esp_spi_flash.h"
 #include "driver/gpio.h"
 
-#define PIN 14
+#define PIN 2 #pino interno da esp32
 
 
 void app_main(void)
