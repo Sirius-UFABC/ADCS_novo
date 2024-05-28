@@ -100,23 +100,23 @@ void mainTask(void){
         float d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15, d16;
         //Lado Norte 
         d1 = vetor[0], d2 = vetor[1]; d3 = vetor[2]; d4 = vetor[3];
-        //Lado Leste 
+        //Lado Oeste
         d5 = vetor[4], d6 = vetor[5]; d7 = vetor[6], d8 = vetor[7];
         //Lado Sul 
         d9 = vetor[8], d10 = vetor[9]; d11 = vetor[10], d12 = vetor[11];
-        //Lado Oeste 
+        //Lado Leste 
         d13 = vetor[12], d14 = vetor[13]; d15 = vetor[14], d16 = vetor[15];
 
         
         double Nx, Ny, Lx, Ly, Sx, Sy, Ox, Oy; 
-        Nx = (d1*cos(3*(pi/4)))+(d2*cos(1*(pi/4)));
-        Ny = (d1*sin(3*(pi/4)))+(d2*sin(1*(pi/4)));
-        Ox = (d3*cos(3*(pi/4)))+(d4*cos(5*(pi/4)));
-        Oy = (d3*sin(3*(pi/4)))+(d4*sin(5*(pi/4)));
-        Sx = (d5*cos(5*(pi/4)))+(d6*cos(7*(pi/4)));
-        Sy = (d5*sin(5*(pi/4)))+(d6*sin(7*(pi/4)));
-        Lx = (d7*cos(7*(pi/4)))+(d8*cos(1*(pi/4)));
-        Ly = (d7*sin(7*(pi/4)))+(d8*sin(1*(pi/4)));
+        Nx = (d1*cos(1*(pi/4)))+(d2*cos(1*(pi/4)))+(d3*cos(3*(pi/4)))+(d4*cos(3*(pi/4)));
+        Ny = (d1*sin(1*(pi/4)))+(d2*sin(1*(pi/4)))+(d3*sin(3*(pi/4)))+(d4*sin(3*(pi/4)));
+        Ox = (d5*cos(3*(pi/4)))+(d6*cos(3*(pi/4)))+(d7*cos(5*(pi/4)))+(d8*cos(5*(pi/4)));
+        Oy = (d5*sin(3*(pi/4)))+(d6*sin(3*(pi/4)))+(d7*sin(5*(pi/4)))+(d8*sin(5*(pi/4)));
+        Sx = (d9*cos(5*(pi/4)))+(d10*cos(5*(pi/4)))+(d11*cos(7*(pi/4)))+(d12*cos(7*(pi/4)));
+        Sy = (d9*sin(5*(pi/4)))+(d10*sin(5*(pi/4)))+(d11*sin(7*(pi/4)))+(d12*sin(7*(pi/4)));
+        Lx = (d13*cos(7*(pi/4)))+(d14*cos(7*(pi/4)))+(d15*cos(1*(pi/4)))+(d16*cos(1*(pi/4)));
+        Ly = (d13*sin(7*(pi/4)))+(d14*sin(7*(pi/4)))+(d15*sin(1*(pi/4)))+(d16*sin(1*(pi/4)));
 
         //soma das componentes
         double Rx, Ry;
@@ -177,9 +177,4 @@ void app_main(){
 
     xTaskCreate(mainTask, "main_task", 4096, NULL, 5, NULL);
 
-}
-
-        
-    }
-    
 }
