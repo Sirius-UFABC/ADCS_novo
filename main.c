@@ -96,6 +96,50 @@ void mainTask(void){
 
         //soma das componentes
         double Rx, Ry;
-@@ -177,9 +177,4 @@ void app_main(){
+        Rx = Nx + Lx + Sx + Ox;
+        Ry = Ny + Ly + Sy + Oy;
+        //módulo do vetor
+        double R = sqrt(pow(Rx,2) + pow(Ry,2));
+        //double x[] = {Nx, Lx, Sx, Ox};
+        //double y[] = {Ny, Ly, Sy, Oy};
+        char* quadrante;
+        double azimute, elevacao;
+        if (Rx > 0 && Ry > 0) {
+        quadrante = "1°";
+        azimute = 90 - atan2(Ry, Rx) * 180 / pi;
+        } else if (Rx < 0 && Ry > 0) {
+        quadrante = "2°";
+        azimute = 90 - atan2(Ry, Rx) * 180 / pi + 180;
+        } else if (Rx < 0 && Ry < 0) {
+        quadrante = "3°";
+        azimute = 90 - atan2(Ry, Rx) * 180 / pi + 180;
+        } else if (Rx > 0 && Ry < 0) {
+        quadrante = "4°";
+        azimute = 90 - atan2(Ry, Rx) * 180 / pi;
+        }
+        // Calcular a elevação (ângulo em graus)
+        elevacao = acos(R / (sqrt(pow(Nx, 2) + pow(Ny, 2)))) * (180 / pi);
+        // Imprimir os resultados
+        printf("Nx: %.2f, Ny: %.2f\n", Nx, Ny);
+        printf("Lx: %.2f, Ly: %.2f\n", Lx, Ly);
+        printf("Sx: %.2f, Sy: %.2f\n", Sx, Sy);
+        printf("Ox: %.2f, Oy: %.2f\n", Ox, Oy);
+        printf("Rx: %.2f, Ry: %.2f\n", Rx, Ry);
+        printf("Módulo do vetor R: %.2f\n", R);
+        //printf("Quadrante: %s\n", quadrante);
+        //printf("Azimute: %.2f\n", azimute);
+        //printf("Elevacao: %.2f\n", elevacao);
+         
+    }
+}
+void app_main(){
+    // Configure ADC 
+    esp_adc_cal_characterize(ADC_UNIT_1, ADC_ATTEN_DB_0, ADC_WIDTH_BIT_DEFAULT, 100, &adc1_chars); // Calibração
+    //ADC_ATTEN_DB_0 (100 mV ~ 950 mV) define a atenuação, ver qual a faixa de tensão de entrada mensurável do Fotodiodo para escolher a atenuação adequada
+    adc1_config_width(ADC_WIDTH_BIT_DEFAULT);
+    adc1_config_channel_atten(ADC1_CHANNEL_6, ADC_ATTEN_DB_0);
 
     xTaskCreate(mainTask, "main_task", 4096, NULL, 5, NULL);
+
+
+}
