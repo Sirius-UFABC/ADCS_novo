@@ -2,11 +2,13 @@
 #include <stdlib.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
+
 // Bibliotecas incorporadas por ADCs
 #include "driver/adc.h"
 #include "esp_adc_cal.h"
 #include "esp_log.h"
 #include <math.h>
+
 #define pi M_PI
 static esp_adc_cal_characteristics_t adc1_chars;
 #define pino_s0  18 //pino que s0, s1 e s2 estão conectados
@@ -15,7 +17,9 @@ static esp_adc_cal_characteristics_t adc1_chars;
 #define pino_s3  
 #define pin_SIG  34 
 #define NUM_CHANNELS 16 //nº total de canais no multiplexador
+
 float vetor[NUM_CHANNELS];
+
 void init_multiplexador(){
     gpio_config_t pin_conf = {
          .pin_bit_mask = (1ULL << pino_s0) | (1ULL << pino_s1) | (1ULL << pino_s2) | (1ULL << pino_s3), //o bit correspondente ao pino específico é definido como 1 e os outros são 0
@@ -30,6 +34,7 @@ void init_multiplexador(){
     pin_conf.mode = GPIO_MODE_INPUT;
     gpio_config(&pin_conf);
 }
+
 uint16_t read_fotodiodo(uint8_t fotodiodo) {
     for (int i = 0; i < 4; i++){
         gpio_set_level(pino_s0 + i, (fotodiodo & (1 << i)) ? 1:0);
@@ -38,6 +43,7 @@ uint16_t read_fotodiodo(uint8_t fotodiodo) {
     
     return adc_reading;
 }
+
 void mainTask(void){
     init_multiplexador();
     //Faz a leitura dos fotodiodos e armazena os valores da voltagem em um vetor
@@ -49,11 +55,13 @@ void mainTask(void){
             printf("Fotodiodo %d: %ld mV\n", fotodiodo, voltage);
             vTaskDelay(pdMS_TO_TICKS(1000));
         }
+        
         //Imprime todos os valores das leituras em ordem
         printf("\nVetor\n");
         for (int i = 0; i < (sizeof(vetor)/ sizeof(vetor[0])); ++i) {
         printf("%.2f ", vetor[i]);
-        }
+        } //sizeof pega o tamanho de bits do elemento
+        
         //Determina o maior valor de voltagem no vetor
         int maior = vetor[0];
         for (int i = 1; i < sizeof(vetor) / sizeof(vetor[0]); ++i) {
@@ -61,17 +69,20 @@ void mainTask(void){
             maior = vetor[i];
             }
         }
+        
         printf("\nO maior valor no vetor é: %d\n", maior);
         
         //Normalização do vetor pelo maior valor
         for (int i = 0; i < (sizeof(vetor)/ sizeof(vetor[0])); ++i) {
             vetor[i] /= maior;
         }
+        
         //Imprime os valores normalizados do vetor
         printf("\nVetor após divisão por %d:\n", maior);
         for (int i = 0; i < (sizeof(vetor)/ sizeof(vetor[0])); ++i) {
         printf("%.2f ", vetor[i]);
         }
+        
         float d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15, d16;
         //Lado Norte 
         d1 = vetor[0], d2 = vetor[1]; d3 = vetor[2]; d4 = vetor[3];
@@ -98,10 +109,12 @@ void mainTask(void){
         double Rx, Ry;
         Rx = Nx + Lx + Sx + Ox;
         Ry = Ny + Ly + Sy + Oy;
+        
         //módulo do vetor
         double R = sqrt(pow(Rx,2) + pow(Ry,2));
         //double x[] = {Nx, Lx, Sx, Ox};
         //double y[] = {Ny, Ly, Sy, Oy};
+        
         char* quadrante;
         double azimute, elevacao;
         if (Rx > 0 && Ry > 0) {
@@ -117,8 +130,10 @@ void mainTask(void){
         quadrante = "4°";
         azimute = 90 - atan2(Ry, Rx) * 180 / pi;
         }
+        
         // Calcular a elevação (ângulo em graus)
         elevacao = acos(R / (sqrt(pow(Nx, 2) + pow(Ny, 2)))) * (180 / pi);
+        
         // Imprimir os resultados
         printf("Nx: %.2f, Ny: %.2f\n", Nx, Ny);
         printf("Lx: %.2f, Ly: %.2f\n", Lx, Ly);
@@ -132,6 +147,7 @@ void mainTask(void){
          
     }
 }
+
 void app_main(){
     // Configure ADC 
     esp_adc_cal_characterize(ADC_UNIT_1, ADC_ATTEN_DB_0, ADC_WIDTH_BIT_DEFAULT, 100, &adc1_chars); // Calibração
